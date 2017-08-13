@@ -41,43 +41,35 @@
     };
 
     // @_equals - return true, if arrays are equals, else return false
+    // second argument - array sorting before comparison
     // use: [first_array]._equals([second_array])
-    thorz.arrays._equals = function(array) {
-        if (!array)
+    thorz.arrays._equals = function(array, sort) {
+        if(typeof(array) !== 'object')
             return false;
 
         if (this.length !== array.length)
             return false;
-
-        for (var index = 0; index < this.length; index++) {
-            if (this[index] instanceof Array && array[index] instanceof Array) {
-                if (!this[index]._equals(array[index]))
-                    return false;
-            } else if (this[index] !== array[index]) {
-                return false;
-            }
+        
+        if(sort) {
+            this.sort();
+            array.sort();
         }
-        return true;
+        
+        return JSON.stringify(this) === JSON.stringify(array);
     }
 
     // Hide method from for-in loops
     Object.defineProperty(thorz.arrays, "_equals", { enumerable: false });
 
-    // return first element in array, return false if array is empty
+    // return first element in array or false if array is empty
     // use: [array]._first()
     thorz.arrays._first = function() {
-        return this.length > 0 ? this[0] : false;
+        return this[0] || false;
     };
 
-    // return last element in array
+    // return last element in array or false if array is empty
     // use: [array].last()
     thorz.arrays._last = function() {
-        return this[this.length - 1];
+        return this[this.length - 1] || false;
     }
-
-    thorz.arrays._remove = function(from, to) {
-        var rest = this.slice((to || from) + 1 || this.length);
-        this.length = from < 0 ? this.length + from : from;
-        return this.push.apply(this, rest);
-    };
 })();
